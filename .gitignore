@@ -1,13 +1,32 @@
-# OS files
-.DS_Store
-Thumbs.db
-*.swp
-*.swo
+# Godot
+client/.godot/
+*.import
+*.translation
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
 
 # IDE
 .vscode/
 .idea/
-*.sublime-*
+*.swp
+*.swo
 
-# Logs
-*.log
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+client/builds/
+*.exe
+*.zip
+
+# Docker
+server/docker/data/
+
+# Local config
+*.local.cfg
