@@ -25,6 +25,8 @@ BuildingSystem="*res://scripts/building/building_system.gd"
 ItemDatabase="*res://scripts/inventory/item_database.gd"
 InventorySystem="*res://scripts/inventory/inventory_system.gd"
 MapGenerator="*res://scripts/world/map_generator.gd"
+GameManager="*res://scripts/core/game_manager.gd"
+UIManager="*res://scripts/ui/ui_manager.gd"
 
 [rendering]
 renderer/rendering_method="mobile"
@@ -62,10 +64,38 @@ interact={
 "deadzone": 0.5,
 "events": [{"keycode": 69, "type": 0}]
 }
+; 加速跑
+sprint={
+"deadzone": 0.5,
+"events": [{"keycode": 4194328, "type": 0}]
+}
+; 丢弃物品
+drop_item={
+"deadzone": 0.5,
+"events": [{"keycode": 81, "type": 0}]
+}
 attack={
 "deadzone": 0.5,
 "events": [{"keycode": 4194325, "type": 0}]
 }
+; 快捷栏 1-9
+hotbar_1={"deadzone": 0.5,"events": [{"keycode": 49, "type": 0}]}
+hotbar_2={"deadzone": 0.5,"events": [{"keycode": 50, "type": 0}]}
+hotbar_3={"deadzone": 0.5,"events": [{"keycode": 51, "type": 0}]}
+hotbar_4={"deadzone": 0.5,"events": [{"keycode": 52, "type": 0}]}
+hotbar_5={"deadzone": 0.5,"events": [{"keycode": 53, "type": 0}]}
+hotbar_6={"deadzone": 0.5,"events": [{"keycode": 54, "type": 0}]}
+hotbar_7={"deadzone": 0.5,"events": [{"keycode": 55, "type": 0}]}
+hotbar_8={"deadzone": 0.5,"events": [{"keycode": 56, "type": 0}]}
+hotbar_9={"deadzone": 0.5,"events": [{"keycode": 57, "type": 0}]}
+
+; UI 快捷键
+toggle_inventory={"deadzone": 0.5,"events": [{"keycode": 73, "type": 0}]}
+toggle_crafting={"deadzone": 0.5,"events": [{"keycode": 4194306, "type": 0}]}
+toggle_cultivation={"deadzone": 0.5,"events": [{"keycode": 67, "type": 0}]}
+toggle_building={"deadzone": 0.5,"events": [{"keycode": 66, "type": 0}]}
+toggle_map={"deadzone": 0.5,"events": [{"keycode": 77, "type": 0}]}
+toggle_help={"deadzone": 0.5,"events": [{"keycode": 72, "type": 0}]}
 
 [physics]
 common/physics_ticks_per_second=60
