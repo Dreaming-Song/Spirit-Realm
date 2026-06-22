@@ -4,7 +4,7 @@ extends Node
 
 func _ready() -> void:
 	print("=" * 50)
-	print("🏮 灵境 · 系统自检")
+	print("🏮 远行商人 · 系统自检")
 	print("=" * 50)
 	
 	_check("Player", get_tree().get_first_node_in_group("player"))
