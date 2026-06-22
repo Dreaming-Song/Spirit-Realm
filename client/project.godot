@@ -1,8 +1,8 @@
-; 灵境 - Godot 4.x 项目配置
+; 远行商人 - Godot 4.x 项目配置
 ; Phase 1: 基础搭建
 
 [application]
-config/name="灵境"
+config/name="远行商人"
 config/description="仙侠风格·旷野之息式·洛克王国式灵宠·2-4人联机开放世界"
 run/main_scene="res://scenes/main.tscn"
 config/icon="res://assets/textures/icon.png"
@@ -13,20 +13,6 @@ AlchemySystem="*res://scripts/alchemy/alchemy_system.gd"
 SaveSystem="*res://scripts/save/save_system.gd"
 NetworkManager="*res://scripts/network/network_manager.gd"
 QuestSystem="*res://scripts/quest/quest_system.gd"
-CultivationSchool="*res://scripts/combat/cultivation_school.gd"
-CultivationSystem="*res://scripts/combat/cultivation_system.gd"
-SkillManager="*res://scripts/combat/skill_manager.gd"
-DamageCalculator="*res://scripts/combat/damage_calculator.gd"
-BuffSystem="*res://scripts/combat/buff_system.gd"
-RealmSystem="*res://scripts/cultivation/realm_system.gd"
-RecipeDatabase="*res://scripts/crafting/recipe_database.gd"
-CraftingSystem="*res://scripts/crafting/crafting_system.gd"
-BuildingSystem="*res://scripts/building/building_system.gd"
-ItemDatabase="*res://scripts/inventory/item_database.gd"
-InventorySystem="*res://scripts/inventory/inventory_system.gd"
-MapGenerator="*res://scripts/world/map_generator.gd"
-GameManager="*res://scripts/core/game_manager.gd"
-UIManager="*res://scripts/ui/ui_manager.gd"
 
 [rendering]
 renderer/rendering_method="mobile"
@@ -64,38 +50,10 @@ interact={
 "deadzone": 0.5,
 "events": [{"keycode": 69, "type": 0}]
 }
-; 加速跑
-sprint={
-"deadzone": 0.5,
-"events": [{"keycode": 4194328, "type": 0}]
-}
-; 丢弃物品
-drop_item={
-"deadzone": 0.5,
-"events": [{"keycode": 81, "type": 0}]
-}
 attack={
 "deadzone": 0.5,
 "events": [{"keycode": 4194325, "type": 0}]
 }
-; 快捷栏 1-9
-hotbar_1={"deadzone": 0.5,"events": [{"keycode": 49, "type": 0}]}
-hotbar_2={"deadzone": 0.5,"events": [{"keycode": 50, "type": 0}]}
-hotbar_3={"deadzone": 0.5,"events": [{"keycode": 51, "type": 0}]}
-hotbar_4={"deadzone": 0.5,"events": [{"keycode": 52, "type": 0}]}
-hotbar_5={"deadzone": 0.5,"events": [{"keycode": 53, "type": 0}]}
-hotbar_6={"deadzone": 0.5,"events": [{"keycode": 54, "type": 0}]}
-hotbar_7={"deadzone": 0.5,"events": [{"keycode": 55, "type": 0}]}
-hotbar_8={"deadzone": 0.5,"events": [{"keycode": 56, "type": 0}]}
-hotbar_9={"deadzone": 0.5,"events": [{"keycode": 57, "type": 0}]}
-
-; UI 快捷键
-toggle_inventory={"deadzone": 0.5,"events": [{"keycode": 73, "type": 0}]}
-toggle_crafting={"deadzone": 0.5,"events": [{"keycode": 4194306, "type": 0}]}
-toggle_cultivation={"deadzone": 0.5,"events": [{"keycode": 67, "type": 0}]}
-toggle_building={"deadzone": 0.5,"events": [{"keycode": 66, "type": 0}]}
-toggle_map={"deadzone": 0.5,"events": [{"keycode": 77, "type": 0}]}
-toggle_help={"deadzone": 0.5,"events": [{"keycode": 72, "type": 0}]}
 
 [physics]
 common/physics_ticks_per_second=60

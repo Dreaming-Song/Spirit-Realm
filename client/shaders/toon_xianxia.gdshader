@@ -2,7 +2,7 @@ shader_type spatial;
 render_mode blend_mix, cull_back, depth_draw_opaque;
 
 /**
- * 灵境 · 国风卡通着色器
+ * 远行商人 · 国风卡通着色器
  * Godot 4.x Spatial Shader
  * 
  * 特征：

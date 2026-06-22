@@ -2,7 +2,7 @@ shader_type spatial;
 render_mode blend_add, cull_front, unshaded, depth_draw_never;
 
 /**
- * 灵境 · 水墨描边着色器
+ * 远行商人 · 水墨描边着色器
  * 用法：作为模型的第二个材质球，cull_front 渲染反面
  * 通过法线外扩实现水墨风外轮廓
  */
