@@ -13,6 +13,10 @@ AlchemySystem="*res://scripts/alchemy/alchemy_system.gd"
 SaveSystem="*res://scripts/save/save_system.gd"
 NetworkManager="*res://scripts/network/network_manager.gd"
 QuestSystem="*res://scripts/quest/quest_system.gd"
+ClassSystem="*res://scripts/combat/class_system.gd"
+SkillManager="*res://scripts/combat/skill_manager.gd"
+DamageCalculator="*res://scripts/combat/damage_calculator.gd"
+BuffSystem="*res://scripts/combat/buff_system.gd"
 
 [rendering]
 renderer/rendering_method="mobile"
