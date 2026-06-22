@@ -228,6 +228,8 @@ def test_project_structure():
         "client/scripts/combat/world_boss.gd",
         "client/scripts/combat/boss_manager.gd",
         "client/scripts/combat/class_system.gd",
+        "client/scripts/combat/cultivation_school.gd",
+        "client/scripts/combat/cultivation_system.gd",
         "client/scripts/combat/skill_manager.gd",
         "client/scripts/combat/damage_calculator.gd",
         "client/scripts/combat/buff_system.gd",
