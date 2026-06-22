@@ -7,27 +7,34 @@ on:
     branches: [ main ]
 
 jobs:
+  # ==================== 服务端测试（多版本矩阵） ====================
   server-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+      # 至少一个版本通过即可，不阻塞其他
+      fail-fast: false
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: 安装 Python
+      - name: 安装 Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: ${{ matrix.python-version }}
 
       - name: 安装依赖
         run: |
           cd server
           pip install -r requirements.txt
-          pip install pytest pytest-asyncio
+          pip install pytest pytest-asyncio pytest-cov
 
-      - name: 启动服务端并测试
+      - name: 启动服务端
         run: |
           cd server
           python main.py &
-          # 等待服务端就绪
+          # 健康检查轮询，最多等 10 秒
           for i in $(seq 1 10); do
             if python -c "import urllib.request; urllib.request.urlopen('http://localhost:8765/api/health')" 2>/dev/null; then
               echo "✅ 服务端已就绪"
@@ -36,8 +43,62 @@ jobs:
             echo "⏳ 等待服务端启动... ($i/10)"
             sleep 1
           done
-          cd ..
-          python -m pytest tests/test_server.py -v --tb=short
+
+      - name: 运行测试（含覆盖率）
+        run: |
+          python -m pytest tests/test_server.py -v --tb=short --cov=server --cov-report=term-missing --cov-report=xml
 
       - name: 停止服务端
+        if: always()
         run: pkill -f "python main.py" || true
+
+      - name: 上传覆盖率报告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-py${{ matrix.python-version }}
+          path: coverage.xml
+
+  # ==================== 项目结构检查 ====================
+  structure-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 检查关键文件完整性
+        run: |
+          errors=0
+          for f in \
+            server/main.py server/requirements.txt \
+            client/project.godot client/scripts/player/player.gd \
+            docs/game-design.md docs/phase-plan.md; do
+            if [ ! -f "$f" ]; then
+              echo "❌ 缺少: $f"
+              errors=$((errors+1))
+            else
+              echo "✅ $f"
+            fi
+          done
+          [ "$errors" -eq 0 ] || exit 1
+
+  # ==================== Godot 无头测试（可选） ====================
+  godot-test:
+    runs-on: ubuntu-latest
+    # 仅在 main 分支 push 时运行（PR 跳过节省时间）
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 下载 Godot 4.x
+        run: |
+          wget -q https://github.com/godotengine/godot/releases/download/4.4-stable/Godot_v4.4-stable_linux.x86_64.zip
+          unzip -q Godot_v4.4-stable_linux.x86_64.zip
+          chmod +x Godot_v4.4-stable_linux.x86_64
+          echo "GODOT_BIN=$(pwd)/Godot_v4.4-stable_linux.x86_64" >> $GITHUB_ENV
+
+      - name: 运行 Godot 内部单元测试
+        run: |
+          cd client
+          $GODOT_BIN --headless --path . --script ../tests/godot_test_runner.gd
+        continue-on-error: true
+        shell: bash
