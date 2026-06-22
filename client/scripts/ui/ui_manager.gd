@@ -28,6 +28,7 @@ class_name UIManager
 @onready var chat_panel: Control = $ChatPanel if has_node("ChatPanel") else _create_chat_panel()
 @onready var player_interaction_menu: Control = $PlayerInteractionMenu if has_node("PlayerInteractionMenu") else _create_interaction_menu()
 @onready var emote_wheel: Control = $EmoteWheel if has_node("EmoteWheel") else _create_emote_wheel()
+@onready var block_selector: Control = $BlockSelector if has_node("BlockSelector") else _create_block_selector()
 
 # ==================== 打开面板 ====================
 var _open_panels: Array[String] = []  # 已打开的面板名栈
@@ -78,6 +79,16 @@ func _create_building_hud() -> void:
 	hud.visible = false
 	hud.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(hud)
+
+## 创建方块选择器面板
+func _create_block_selector() -> Control:
+	var selector = preload("res://scripts/ui/block_selector.gd").new()
+	selector.name = "BlockSelector"
+	selector.visible = false
+	selector.block_selected.connect(_on_block_selected)
+	selector.selector_closed.connect(_on_selector_closed)
+	add_child(selector)
+	return selector
 
 func _create_settings_panel() -> Control:
 	var panel = preload("res://scripts/ui/settings_panel.gd").new()
@@ -390,12 +401,16 @@ func _cultivation_show() -> void:
 
 ## 处理 B 键 — MC 风格建造模式 vs 传统面板
 func _handle_building_toggle() -> void:
+	# 如果方块选择器开着，先关掉
+	if block_selector and block_selector.visible:
+		block_selector.close()
+		return
+	
 	# 第一优先：使用 BuildingMode（MC风格区块建造）
 	if building_mode and building_mode.has_method("toggle_building_mode"):
 		if building_mode.is_building_mode:
-			# 退出建造模式 → 隐藏预览，恢复输入（内含面板判断）
+			# 退出建造模式 → 隐藏预览，恢复输入
 			building_mode._exit_building_mode()
-			# 从打开面板列表中移除
 			if "building" in _open_panels:
 				_open_panels.erase("building")
 		else:
@@ -404,13 +419,37 @@ func _handle_building_toggle() -> void:
 			var camera = player.get_node("Camera3D") if player and player.has_node("Camera3D") else null
 			if player and camera:
 				building_mode._enter_building_mode(player, camera)
-				# 隐藏所有 UI 面板
 				_hide_all_except("")
 				_open_panels.append("building")
+				
+				# 如果背包里没有自动选中方块，打开选择器
+				var selected = building_mode.get_selected_info()
+				if selected.get("item_id", "").is_empty():
+					_open_block_selector()
 		return
 	
 	# 降级：使用传统建筑面板（UI列表式）
 	toggle_panel("building")
+
+## 打开方块选择器
+func _open_block_selector() -> void:
+	if not block_selector:
+		return
+	var player = get_node("/root/GameManager/Player") if has_node("/root/GameManager/Player") else null
+	var inventory = get_node("/root/GameManager/Inventory") if has_node("/root/GameManager/Inventory") else null
+	var building_sys = get_node("/root/GameManager/BuildingSystem") if has_node("/root/GameManager/BuildingSystem") else null
+	if player and inventory and building_sys and building_mode:
+		block_selector.open(player, inventory, building_sys, building_mode)
+
+func _on_block_selected(piece_type: int, item_id: String, tier: int) -> void:
+	"""方块选择器选中方块后的处理"""
+	pass  # BuildingMode 已经通过 block_selected 信号处理了
+
+func _on_selector_closed() -> void:
+	"""方块选择器关闭后的处理"""
+	# 如果建造模式是活跃的，恢复鼠标模式
+	if building_mode and building_mode.is_building_mode:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _building_show() -> void:
 	"""刷新建造面板"""
