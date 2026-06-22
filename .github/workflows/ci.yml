@@ -21,7 +21,7 @@ jobs:
         run: |
           cd server
           pip install -r requirements.txt
-          pip install pytest pytest-asyncio websockets httpx2
+          pip install pytest pytest-asyncio websockets
 
       - name: 启动服务端并测试
         run: |

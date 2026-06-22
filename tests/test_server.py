@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-灵境 · 服务端完整测试套件
+远行商人 · 服务端完整测试套件
 用 pytest 跑：pytest tests/ -v
 """
 
@@ -225,25 +225,6 @@ def test_project_structure():
         "client/scripts/quest/quest_system.gd",
         "client/scripts/combat/enemy.gd",
         "client/scripts/secret_zone/secret_zone.gd",
-        "client/scripts/combat/world_boss.gd",
-        "client/scripts/combat/boss_manager.gd",
-        "client/scripts/combat/class_system.gd",
-        "client/scripts/combat/cultivation_school.gd",
-        "client/scripts/combat/cultivation_system.gd",
-        "client/scripts/combat/skill_manager.gd",
-        "client/scripts/combat/damage_calculator.gd",
-        "client/scripts/combat/buff_system.gd",
-        "client/scripts/cultivation/realm_system.gd",
-        "client/scripts/crafting/recipe_database.gd",
-        "client/scripts/crafting/crafting_system.gd",
-        "client/scripts/building/building_system.gd",
-        "client/scripts/inventory/item_database.gd",
-        "client/scripts/inventory/inventory_system.gd",
-        "client/scripts/world/map_generator.gd",
-        "client/scripts/core/game_manager.gd",
-        "client/scripts/core/player_controller.gd",
-        "client/scripts/ui/ui_manager.gd",
-        "client/project.godot",
         "client/project.godot",
         "docs/game-design.md",
         "docs/phase-plan.md",

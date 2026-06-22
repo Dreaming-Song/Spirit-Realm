@@ -7,7 +7,7 @@ var tests_failed: int = 0
 
 func _ready() -> void:
 	print("=" * 50)
-	print("🧪 灵境 · 单元测试开始")
+	print("🧪 远行商人 · 单元测试开始")
 	print("=" * 50)
 
 	_run_tests()
