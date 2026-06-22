@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-远行商人 · 游戏服务端
+灵境 · 游戏服务端
 FastAPI + WebSocket 联机后端
 """
 
@@ -144,7 +144,7 @@ class RoomManager:
 
 # ==================== FastAPI 应用 ====================
 
-app = FastAPI(title="远行商人 · 联机服务", version="0.1.0")
+app = FastAPI(title="灵境 · 联机服务", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -278,5 +278,5 @@ async def websocket_endpoint(ws: WebSocket, player_id: str):
 
 if __name__ == "__main__":
     import uvicorn
-    logger.info("🚀 远行商人 · 联机服务启动")
+    logger.info("🚀 灵境 · 联机服务启动")
     uvicorn.run(app, host="0.0.0.0", port=8765)

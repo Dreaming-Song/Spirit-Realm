@@ -1,5 +1,5 @@
 #!/bin/bash
-# 远行商人 · PC 端打包脚本
+# 灵境 · PC 端打包脚本
 # 用法: bash scripts/export_pc.sh [version]
 # 需要 Godot 4.x + 导出模板已安装
 
@@ -9,7 +9,7 @@ VERSION="${1:-0.1.0}"
 GODOT_BIN="${GODOT_PATH:-godot}"
 OUTPUT_DIR="builds"
 
-echo "🎮 远行商人 v$VERSION PC 打包开始"
+echo "🎮 灵境 v$VERSION PC 打包开始"
 echo "================================"
 
 # 清理旧版

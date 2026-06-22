@@ -17,7 +17,7 @@ func _enter_tree() -> void:
 	instance = self
 
 func _ready() -> void:
-	print("🌏 远行商人 v0.1.0 启动")
+	print("🌏 灵境 v0.1.0 启动")
 	_setup_autoloads()
 
 func _setup_autoloads() -> void:

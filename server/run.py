@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""远行商人 · 一键启动服务端"""
+"""灵境 · 一键启动服务端"""
 import uvicorn
 
 if __name__ == "__main__":

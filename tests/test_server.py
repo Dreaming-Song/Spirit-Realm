@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-远行商人 · 服务端完整测试套件
+灵境 · 服务端完整测试套件
 用 pytest 跑：pytest tests/ -v
 """
 

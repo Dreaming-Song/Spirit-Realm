@@ -1,80 +1,73 @@
-# 远行商人 🏮
+# 灵境 🏮
 
-> 仙侠风格 · 旷野之息式 · 洛克王国式灵宠 · 2-4人联机开放世界
+> 修仙题材开放世界 · 法术炼丹灵宠 · 多人联机探索
 
 ## 🎯 核心定位
 
 | 维度 | 说明 |
 |------|------|
-| 风格 | 国风卡通/低模仙侠开放世界 |
-| 核心玩法 | 物理驱动的仙侠交互（御剑飞行、五行法术、炼丹、灵宠） |
+| 风格 | 国风卡通 · 修仙开放世界 |
+| 核心玩法 | 法术战斗、炼丹制药、灵宠培养、秘境探险 |
 | 联机规模 | 2-4人轻量联机 |
-| 地图规模 | 初始 1km²，逐步扩充至 10km² |
 | 开发周期 | 6个月（5阶段迭代） |
 | 目标平台 | PC 端 |
 
-## 🧩 核心差异化（仙侠 × 旷野之息）
+## 🧩 核心特色
 
-| 旷野之息 | 仙侠改造 |
-|---------|---------|
-| 滑翔翼 | → **御剑飞行**（物理驱动，气流影响） |
-| 元素交互（火/冰/雷） | → **五行法术**（金木水火土） |
-| 烹饪系统 | → **炼丹系统**（物理采集 + 配方 DB） |
-| 神庙解谜 | → **宗门秘境**（物理解谜，联机组队） |
-| 马匹骑行 | → **灵宠随行**（仙鹤、灵狐） |
+| 系统 | 说明 |
+|------|------|
+| 🪄 **五行法术** | 金木水火土相生相克，物理交互 |
+| 🔥 **炼丹系统** | 采集灵草 → 配方合成 → 丹药炼制 |
+| 🐉 **灵宠系统** | 收服培养仙兽，随行战斗 |
+| ⚔️ **妖兽战斗** | 4种妖兽AI（巡逻/索敌/追击/技能） |
+| 🏯 **宗门秘境** | 物理解谜，五行机关，联机组队挑战 |
+| 🌐 **联机探索** | 自建 WebSocket 服务端，实时同步 |
+| 🎨 **国风渲染** | 自定义 Toon Shader，水墨描边 |
 
 ## 🏗️ 技术栈
 
 ```
-Game Engine:    Godot 4.x (GDScript)
-Modeling:       Blender + Substance Painter + GIMP
-Networking:     Photon PUN 2 (frontend) + Python FastAPI/WebSocket (backend)
-Database:       SQLite (本地存档) + PostgreSQL (联机数据)
-Deployment:     Docker → 阿里云轻量服务器
-Tooling:        Python 脚本（批量导出、调试、日志分析）
+Game Engine:    Godot 4.x (GDScript ~3500行)
+Shader:         自定义 Toon Shader + 水墨描边
+Networking:     Python FastAPI + WebSocket (自建后端)
+Database:       PostgreSQL (联机数据)
+CI/CD:          GitHub Actions + pytest
+Deployment:     Docker / Render (免费)
+Tooling:        Python 脚本
 ```
 
-## 📅 开发路线图（6个月）
+## 📅 开发路线图
 
-| 阶段 | 时间 | 状态 | 产出 |
-|------|------|------|------|
-| **Phase 1** 基础搭建 | 第1个月 | ✅ 代码完成 | 3D仙侠世界（地形、角色、御剑、砍树物理） |
-| **Phase 2** 核心玩法 | 第2-3个月 | ✅ 代码完成 | 御剑飞行、五行法术、炼丹、灵宠、存档 |
-| **Phase 3** 联机功能 | 第4-5个月 | ✅ 代码完成 | FastAPI+WebSocket 后端、Godot客户端、Docker部署 |
-| **Phase 4** 玩法完善 | 第6个月 | ✅ 代码完成 | 任务系统、妖兽战斗、秘境解谜 |
-| **Phase 5** 测试上线 | 最后2周 | 🚧 进行中 | 单元测试、CI、PC端打包 |
+| 阶段 | 状态 | 产出 |
+|------|------|------|
+| **Phase 1** 基础搭建 | ✅ | 3D世界、角色控制、交互系统 |
+| **Phase 2** 核心玩法 | ✅ | 法术、炼丹、灵宠、存档 |
+| **Phase 3** 联机功能 | ✅ | FastAPI+WebSocket 后端、数据库、Docker |
+| **Phase 4** 玩法完善 | ✅ | 任务系统、妖兽战斗、秘境解谜 |
+| **Phase 5** 测试上线 | 🚧 进行中 | 单元测试、CI、PC端打包 |
 
 ## 📁 项目结构
 
 ```
-Merchant-Game/
-├── client/              # Godot 前端 (GDScript ~3500行)
+├── client/              # Godot 前端
 │   ├── scripts/
 │   │   ├── player/      # 角色控制器 + 存档
 │   │   ├── magic/       # 五行法术系统
-│   │   ├── alchemy/     # 炼丹系统 + 丹炉节点
+│   │   ├── alchemy/     # 炼丹系统
 │   │   ├── pet/         # 灵宠系统
 │   │   ├── network/     # WebSocket 联机客户端
-│   │   ├── quest/       # 非线性任务系统
+│   │   ├── quest/       # 任务系统
 │   │   ├── combat/      # 妖兽战斗AI
-│   │   ├── secret_zone/ # 宗门秘境解谜
-│   │   └── ui/          # HUD
-│   └── project.godot
+│   │   └── secret_zone/ # 秘境解谜
+│   └── shaders/         # 国风Toon Shader
 ├── server/              # Python 后端
-│   ├── main.py          # FastAPI + WebSocket (320行)
-│   ├── database/        # PostgreSQL 建表脚本
+│   ├── main.py          # FastAPI + WebSocket
+│   ├── database/        # 建表脚本
 │   ├── Dockerfile
-│   └── docker-compose.yml
-├── tests/               # 测试套件
-│   ├── test_server.py   # Python 后端测试 (pytest)
-│   └── godot_test_runner.gd
+│   └── render.yaml      # 免费部署配置
+├── tests/               # 测试
 ├── docs/                # 设计文档
-│   ├── game-design.md
-│   ├── art-strategy.md
-│   ├── tech-stack.md
-│   ├── phase-plan.md
-│   └── work-log.md
-└── .github/workflows/   # CI 自动测试
+└── .github/workflows/   # CI
 ```
 
 ## 🚀 快速开始
@@ -95,10 +88,7 @@ docker-compose up -d
 
 ### 运行测试
 ```bash
-# 服务端测试
 pytest tests/test_server.py -v
-
-# PC 端打包（需要 Godot 导出模板）
 bash scripts/export_pc.sh 0.1.0
 ```
 
