@@ -291,7 +291,13 @@ func _is_ui_open() -> bool:
 # ==================== 交互系统 ====================
 
 func _do_interact() -> void:
-	"""使用交互探测器执行交互"""
+	"""使用交互探测器执行交互（如果正在牵手则先松开）"""
+	# 优先检查牵手状态
+	var hhm = get_node("/root/HandHoldManager") if has_node("/root/HandHoldManager") else null
+	if hhm and hhm.is_holding():
+		hhm.release_hold("交互键松开")
+		return
+	
 	var detector = get_node("/root/InteractionDetector") if has_node("/root/InteractionDetector") else null
 	if detector and detector.has_method("perform_interaction"):
 		var result = detector.perform_interaction(self)

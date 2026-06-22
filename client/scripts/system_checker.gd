@@ -13,6 +13,7 @@ func _ready() -> void:
 	_check("SaveSystem", SaveSystem if has_autoload("SaveSystem") else null)
 	_check("QuestSystem", QuestSystem if has_autoload("QuestSystem") else null)
 	_check("NetworkManager", NetworkManager if has_autoload("NetworkManager") else null)
+	_check("HandHoldManager", HandHoldManager if has_autoload("HandHoldManager") else null)
 	
 	print("-" * 50)
 	print("✅ 自检完成")

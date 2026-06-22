@@ -160,6 +160,17 @@ func receive_chat(sender_id: int, message: String) -> void:
 
 # ==================== RPC: 玩家状态同步 ====================
 
+## 发送本地玩家状态（由 PlayerSpawner 调用）
+func send_player_state(x: float, y: float, z: float, rot_x: float, rot_y: float, 
+					   hp: float, mp: float, is_flying: bool) -> void:
+	var state = {
+		"x": x, "y": y, "z": z,
+		"rot_x": rot_x, "rot_y": rot_y,
+		"hp": hp, "mp": mp,
+		"is_flying": is_flying
+	}
+	sync_player_state(state)
+
 @rpc("any_peer", "unreliable")
 func sync_player_state(state: Dictionary) -> void:
 	"""同步玩家位置/状态"""
@@ -172,6 +183,44 @@ func sync_player_state(state: Dictionary) -> void:
 				rpc_id(pid, "sync_player_state", state)
 	
 	player_state_received.emit(sender, state)
+
+# ==================== RPC: 牵手 🤝 ====================
+
+## 发送牵手请求
+@rpc("any_peer", "reliable")
+func send_hold_request(my_name: String) -> void:
+	"""收到牵手请求"""
+	var sender = multiplayer.get_remote_sender_id()
+	var hhm = get_node("/root/HandHoldManager") if has_node("/root/HandHoldManager") else null
+	if hhm:
+		hhm._on_hold_request_received(str(sender), my_name)
+
+## 接受牵手（发送方成为领队）
+@rpc("any_peer", "reliable")
+func send_hold_accept() -> void:
+	"""对方接受牵手"""
+	var sender = multiplayer.get_remote_sender_id()
+	var hhm = get_node("/root/HandHoldManager") if has_node("/root/HandHoldManager") else null
+	if hhm:
+		hhm._on_hold_accepted(str(sender))
+
+## 拒绝牵手
+@rpc("any_peer", "reliable")
+func send_hold_reject() -> void:
+	"""对方拒绝牵手"""
+	var sender = multiplayer.get_remote_sender_id()
+	var hhm = get_node("/root/HandHoldManager") if has_node("/root/HandHoldManager") else null
+	if hhm:
+		hhm._on_hold_rejected(str(sender))
+
+## 松开牵手
+@rpc("any_peer", "reliable")
+func send_hold_release() -> void:
+	"""对方松开手"""
+	var sender = multiplayer.get_remote_sender_id()
+	var hhm = get_node("/root/HandHoldManager") if has_node("/root/HandHoldManager") else null
+	if hhm:
+		hhm._on_hold_released(str(sender))
 
 # ==================== 工具 ====================
 

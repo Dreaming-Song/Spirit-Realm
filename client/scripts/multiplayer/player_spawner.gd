@@ -219,6 +219,10 @@ func interact_with_player(player_id: String, action: String) -> void:
 			_send_interaction(player_id, "trade_request")
 		"party_invite":
 			_send_interaction(player_id, "party_invite")
+		"hold_hand":
+			_handle_handhold(player_id, remote)
+		"release_hand":
+			_handle_release_handhold(player_id)
 		"follow":
 			_send_interaction(player_id, "follow_request")
 		"wave":
@@ -227,6 +231,33 @@ func interact_with_player(player_id: String, action: String) -> void:
 			_send_interaction(player_id, "emote_bow")
 		"dance":
 			_send_interaction(player_id, "emote_dance")
+
+func _handle_handhold(target_id: String, remote_node: Node) -> void:
+	"""处理牵手请求"""
+	var hhm = get_node("/root/HandHoldManager") if has_node("/root/HandHoldManager") else null
+	if not hhm:
+		print("⚠️ HandHoldManager 未加载")
+		return
+	
+	# 如果已经和这个玩家牵手了，改为松开
+	if hhm.is_holding() and hhm.partner_id == target_id:
+		hhm.release_hold("通过菜单松开")
+		return
+	
+	# 获取对方名字
+	var target_name = remote_node.get("display_name", "道友") if remote_node else "道友"
+	hhm.request_hold(target_id, target_name)
+	print("🤝 发起牵手请求 → %s" % target_name)
+
+func _handle_release_handhold(player_id: String) -> void:
+	"""松开手"""
+	var hhm = get_node("/root/HandHoldManager") if has_node("/root/HandHoldManager") else null
+	if hhm:
+		hhm.release_hold()
+
+## 根据ID获取远程玩家节点
+func get_player_node(player_id: String) -> Node3D:
+	return _players.get(player_id, null)
 
 func _send_interaction(target_id: String, action: String) -> void:
 	"""发送交互消息给目标玩家"""
