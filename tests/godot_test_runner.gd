@@ -40,6 +40,10 @@ func _run_tests() -> void:
 	_test_combat_system()
 	_test_secret_zone()
 
+	# Phase 5: 建造系统
+	_test_building_system()
+	_test_block_selector()
+
 # ==================== Phase 1 测试 ====================
 
 func _test_player_system() -> void:
@@ -111,6 +115,43 @@ func _test_secret_zone() -> void:
 	if zone:
 		_assert("秘境有进度查询", zone.has_method("get_progress"))
 		_assert("秘境有谜题交互", zone.has_method("interact_with_puzzle"))
+
+# ==================== Phase 5 测试 ====================
+
+func _test_building_system() -> void:
+	var bs = get_node_or_null("/root/Main/BuildingSystem")
+	_assert("建筑系统存在", bs != null)
+	if bs:
+		_assert("建筑系统有放置方法", bs.has_method("try_place"))
+		_assert("建筑系统有拆除方法", bs.has_method("demolish"))
+		_assert("建筑系统有网格吸附", bs.has_method("_snap_to_grid"))
+	
+	var bm = get_node_or_null("/root/Main/Player/BuildingMode")
+	_assert("建造模式存在（在Player下）", bm != null)
+	if bm:
+		_assert("建造模式有切换接口", bm.has_method("toggle_building_mode"))
+		_assert("建造模式有选中信息", bm.has_method("get_selected_info"))
+		_assert("建造模式有选择方块接口", bm.has_method("select_building"))
+		
+		# 测试默认状态
+		var info = bm.get_selected_info()
+		_assert("选中信息是字典", typeof(info) == TYPE_DICTIONARY)
+		_assert("选中信息包含 piece_type", info.has("piece_type"))
+		_assert("选中信息包含 can_place", info.has("can_place"))
+
+func _test_block_selector() -> void:
+	var sel = get_node_or_null("/root/Main/HUD/BlockSelector")
+	_assert("方块选择器存在（在HUD下）", sel != null)
+	if sel:
+		_assert("选择器有打开方法", sel.has_method("open"))
+		_assert("选择器有关闭方法", sel.has_method("close"))
+		_assert("选择器有选中信号", sel.has_signal("block_selected"))
+		_assert("选择器有关闭信号", sel.has_signal("selector_closed"))
+		
+		# 测试分类配置
+		_assert("有 CATEGORY_NAMES 常量", sel.get("CATEGORY_NAMES") != null)
+		_assert("有5个分类", sel.get("CATEGORY_NAMES").size() == 5)
+		_assert("分类包含茅草", "茅草" in sel.get("CATEGORY_NAMES"))
 
 # ==================== 工具 ====================
 
