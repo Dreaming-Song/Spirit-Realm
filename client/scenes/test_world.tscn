@@ -1,0 +1,65 @@
+[gd_scene load_steps=10 format=3 uid="uid://test_scene"]
+
+[ext_resource type="Shader" path="res://shaders/toon_xianxia.gdshader" id="1"]
+[ext_resource type="Shader" path="res://shaders/outline_ink.gdshader" id="2"]
+
+[sub_resource type="BoxMesh" id="box_ground"]
+size = Vector3(50, 0.5, 50)
+
+[sub_resource type="BoxMesh" id="box_pillar"]
+size = Vector3(1, 5, 1)
+
+[sub_resource type="SphereMesh" id="sphere_orb"]
+radius = 0.8
+height = 1.6
+
+[sub_resource type="ShaderMaterial" id="mat_toon"]
+shader = ExtResource("1")
+
+[sub_resource type="ShaderMaterial" id="mat_toon_gold"]
+shader = ExtResource("1")
+
+[node name="TestWorld" type="Node3D"]
+
+# 地面
+[node name="Ground" type="MeshInstance3D" parent="."]
+mesh = SubResource("box_ground")
+material_override = SubResource("mat_toon")
+position = Vector3(0, -0.25, 0)
+
+# 测试柱
+[node name="Pillar1" type="MeshInstance3D" parent="."]
+mesh = SubResource("box_pillar")
+material_override = SubResource("mat_toon")
+position = Vector3(-5, 2.5, 0)
+
+[node name="Pillar2" type="MeshInstance3D" parent="."]
+mesh = SubResource("box_pillar")
+material_override = SubResource("mat_toon_gold")
+position = Vector3(5, 2.5, 0)
+
+# 测试球（灵珠效果）
+[node name="Orb" type="MeshInstance3D" parent="."]
+mesh = SubResource("sphere_orb")
+material_override = SubResource("mat_toon")
+position = Vector3(0, 3, -5)
+
+# 光照
+[node name="DirectionalLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, -0.5, 0, 0.5, 0.866025, 0, 10, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("env")
+
+[sub_resource type="Environment" id="env"]
+background_mode = 2
+background_sky = SubResource("sky")
+
+[sub_resource type="Sky" id="sky"]
+sky_material = SubResource("sky_mat")
+
+[sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
+sky_top_color = Color(0.5, 0.7, 1.0)
+sky_horizon_color = Color(0.85, 0.75, 0.6)
+ground_bottom_color = Color(0.3, 0.3, 0.35)

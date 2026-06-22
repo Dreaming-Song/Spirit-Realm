@@ -36,31 +36,71 @@ Tooling:        Python 脚本（批量导出、调试、日志分析）
 
 ## 📅 开发路线图（6个月）
 
-| 阶段 | 时间 | 产出 |
-|------|------|------|
-| **Phase 1** 基础搭建 | 第1个月 | 能跑的3D仙侠世界（地形、角色、物理交互） |
-| **Phase 2** 核心玩法 | 第2-3个月 | 单机版：御剑飞行、五行法术、炼丹、灵宠 |
-| **Phase 3** 联机功能 | 第4-5个月 | 2-4人联机，公网可玩 |
-| **Phase 4** 玩法完善 | 第6个月 | 秘境、战斗、任务、美术优化 |
-| **Phase 5** 测试上线 | 最后2周 | 打包、测试、文档 |
+| 阶段 | 时间 | 状态 | 产出 |
+|------|------|------|------|
+| **Phase 1** 基础搭建 | 第1个月 | ✅ 代码完成 | 3D仙侠世界（地形、角色、御剑、砍树物理） |
+| **Phase 2** 核心玩法 | 第2-3个月 | ✅ 代码完成 | 御剑飞行、五行法术、炼丹、灵宠、存档 |
+| **Phase 3** 联机功能 | 第4-5个月 | ✅ 代码完成 | FastAPI+WebSocket 后端、Godot客户端、Docker部署 |
+| **Phase 4** 玩法完善 | 第6个月 | ✅ 代码完成 | 任务系统、妖兽战斗、秘境解谜 |
+| **Phase 5** 测试上线 | 最后2周 | 🚧 进行中 | 单元测试、CI、PC端打包 |
 
 ## 📁 项目结构
 
 ```
 Merchant-Game/
-├── client/          # Godot 前端
-│   ├── scenes/      # 场景文件
-│   ├── scripts/     # GDScript 脚本
-│   └── assets/      # 模型/贴图/音效
-├── server/          # Python 后端
-│   ├── app/         # FastAPI + WebSocket
-│   └── docker/      # 部署配置
-├── tools/           # Python 工具脚本
-├── database/        # SQL 建表脚本
-├── docs/            # 设计文档、美术策略
-└── assets/          # 共享资源
+├── client/              # Godot 前端 (GDScript ~3500行)
+│   ├── scripts/
+│   │   ├── player/      # 角色控制器 + 存档
+│   │   ├── magic/       # 五行法术系统
+│   │   ├── alchemy/     # 炼丹系统 + 丹炉节点
+│   │   ├── pet/         # 灵宠系统
+│   │   ├── network/     # WebSocket 联机客户端
+│   │   ├── quest/       # 非线性任务系统
+│   │   ├── combat/      # 妖兽战斗AI
+│   │   ├── secret_zone/ # 宗门秘境解谜
+│   │   └── ui/          # HUD
+│   └── project.godot
+├── server/              # Python 后端
+│   ├── main.py          # FastAPI + WebSocket (320行)
+│   ├── database/        # PostgreSQL 建表脚本
+│   ├── Dockerfile
+│   └── docker-compose.yml
+├── tests/               # 测试套件
+│   ├── test_server.py   # Python 后端测试 (pytest)
+│   └── godot_test_runner.gd
+├── docs/                # 设计文档
+│   ├── game-design.md
+│   ├── art-strategy.md
+│   ├── tech-stack.md
+│   ├── phase-plan.md
+│   └── work-log.md
+└── .github/workflows/   # CI 自动测试
 ```
 
 ## 🚀 快速开始
 
-_待阶段1完成后补充_
+### 启动联机服务端
+```bash
+cd server
+pip install -r requirements.txt
+python main.py
+# → 监听 ws://0.0.0.0:8765
+```
+
+### Docker 部署
+```bash
+cd server
+docker-compose up -d
+```
+
+### 运行测试
+```bash
+# 服务端测试
+pytest tests/test_server.py -v
+
+# PC 端打包（需要 Godot 导出模板）
+bash scripts/export_pc.sh 0.1.0
+```
+
+### Godot 项目
+用 Godot 4.x 打开 `client/project.godot` 即可。

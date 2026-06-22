@@ -1,0 +1,35 @@
+# 远行商人 · Render Blueprint 部署
+# 免费套餐：Web Service 750h/月 + PostgreSQL 1GB
+# 使用方法：fork 仓库 → Render Dashboard → Blueprint → Connect
+
+services:
+  # ===== 游戏后端 =====
+  - type: web
+    name: merchant-game-server
+    env: python
+    region: singapore  # 亚洲节点，国内延迟低
+    plan: free
+    buildCommand: pip install -r server/requirements.txt
+    startCommand: cd server && python main.py
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: merchant-game-db
+          property: connectionString
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: SECRET_KEY
+        generateValue: true
+
+  # ===== 数据库 =====
+  - type: postgresql
+    name: merchant-game-db
+    plan: free
+    databaseName: merchant_game
+    ipAllowList: []  # 只允许同一账号下服务访问
+
+# 重启策略
+autoDeploy: true

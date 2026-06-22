@@ -4,8 +4,15 @@
 [application]
 config/name="远行商人"
 config/description="仙侠风格·旷野之息式·洛克王国式灵宠·2-4人联机开放世界"
-run/main_scene="res://scenes/world/main.tscn"
+run/main_scene="res://scenes/main.tscn"
 config/icon="res://assets/textures/icon.png"
+
+[autoload]
+MagicSystem="*res://scripts/magic/magic_system.gd"
+AlchemySystem="*res://scripts/alchemy/alchemy_system.gd"
+SaveSystem="*res://scripts/save/save_system.gd"
+NetworkManager="*res://scripts/network/network_manager.gd"
+QuestSystem="*res://scripts/quest/quest_system.gd"
 
 [rendering]
 renderer/rendering_method="mobile"
