@@ -18,6 +18,10 @@ CultivationSystem="*res://scripts/combat/cultivation_system.gd"
 SkillManager="*res://scripts/combat/skill_manager.gd"
 DamageCalculator="*res://scripts/combat/damage_calculator.gd"
 BuffSystem="*res://scripts/combat/buff_system.gd"
+RealmSystem="*res://scripts/cultivation/realm_system.gd"
+RecipeDatabase="*res://scripts/crafting/recipe_database.gd"
+CraftingSystem="*res://scripts/crafting/crafting_system.gd"
+BuildingSystem="*res://scripts/building/building_system.gd"
 
 [rendering]
 renderer/rendering_method="mobile"
