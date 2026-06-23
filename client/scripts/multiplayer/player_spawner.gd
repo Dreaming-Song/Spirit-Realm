@@ -203,7 +203,8 @@ func _send_local_state() -> void:
 		pos.x, pos.y, pos.z,
 		rot.x, rot.y,
 		hp, mp,
-		false
+		_local_player.is_flying,
+		_local_player.is_in_water
 	)
 
 # ==================== 玩家交互 ====================

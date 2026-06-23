@@ -23,6 +23,7 @@ var max_hp: int = 100
 var current_mp: int = 50
 var max_mp: int = 50
 var is_flying: bool = false
+var is_in_water: bool = false    # 🌊 是否在水中
 var is_talking: bool = false
 
 # 插值
@@ -60,6 +61,7 @@ func update_state(state: Dictionary) -> void:
 	current_mp = state.get("mp", current_mp)
 	max_hp = state.get("max_mp", max_hp)
 	is_flying = state.get("is_flying", false)
+	is_in_water = state.get("is_in_water", false)
 	
 	_update_hp_bar()
 
@@ -104,4 +106,6 @@ func get_interaction_info() -> Dictionary:
 		"node": self,
 		"hp_ratio": float(current_hp) / max(max_hp, 1),
 		"mp_ratio": float(current_mp) / max(max_mp, 1),
+		"is_flying": is_flying,
+		"is_in_water": is_in_water,
 	}

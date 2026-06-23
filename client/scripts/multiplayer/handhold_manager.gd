@@ -258,30 +258,62 @@ func _on_hold_released(from_id: String) -> void:
 # ==================== 跟随逻辑 ====================
 
 func _follow_leader(delta: float) -> void:
-	"""跟随我的领队（保持 follow_distance 距离）"""
+	"""跟随我的领队 — 同步位置 + 状态（飞行/游泳）"""
 	if not my_leader_node or not _local_player:
 		return
 	
 	var leader_pos = my_leader_node.global_position
-	var leader_back = -my_leader_node.global_transform.basis.z.normalized()
+	var leader_basis = my_leader_node.global_transform.basis
+	var leader_back = -leader_basis.z.normalized()
 	if leader_back.length() < 0.1:
 		leader_back = Vector3(0, 0, 1)
 	
-	# 目标位置：领队身后 follow_distance 处
+	# 🎯 计算目标位置（领队身后 follow_distance）
 	var target = leader_pos + leader_back * follow_distance
-	target.y = _local_player.global_position.y  # 保持高度
 	
+	# 🚀 状态同步：复制领队的飞行/游泳状态
+	_sync_leader_state()
+	
+	# 📏 高度同步
+	if my_leader_node.is_flying:
+		# 飞行中：跟随领队高度，保持队形
+		target.y = leader_pos.y
+	elif my_leader_node.is_in_water:
+		# 水域中：跟随领队高度
+		target.y = leader_pos.y
+	else:
+		# 地面：保持本地水平高度
+		target.y = _local_player.global_position.y
+	
+	# 🏃 平滑插值移动
 	_local_player.global_position = _local_player.global_position.lerp(
 		target, follow_smoothness * delta
 	)
 	
-	# 面朝领队方向
+	# 面朝领队方向（保持注视）
 	var look_dir = (leader_pos - _local_player.global_position).normalized()
 	if look_dir.length() > 0.1:
 		_local_player.look_at(
 			_local_player.global_position + look_dir,
 			Vector3.UP
 		)
+
+func _sync_leader_state() -> void:
+	"""同步领队的飞行/游泳状态到本地玩家"""
+	if not my_leader_node or not _local_player:
+		return
+	
+	var local_pc = _local_player
+	
+	# 🛸 飞行状态同步
+	if my_leader_node.is_flying and not local_pc.is_flying:
+		local_pc.set_flying_state(true)
+	elif not my_leader_node.is_flying and local_pc.is_flying:
+		local_pc.set_flying_state(false)
+	
+	# 🌊 游泳状态同步（通过 is_in_water）
+	# 注意：is_in_water 是自动检测的，不需要手动设置
+	# 但跟随者进入水域时自动触发 buoyancy
 
 # ==================== 光链管理 ====================
 

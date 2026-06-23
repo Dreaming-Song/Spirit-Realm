@@ -33,6 +33,12 @@ var input_handler: InputHandler
 var is_flying: bool = false
 var wind_direction: Vector3 = Vector3.ZERO  # 气流方向（风场影响）
 
+# ==================== 水域状态 ====================
+var is_in_water: bool = false         # 是否在水中
+var ocean_level: float = -2.0         # 海平面高度（从TerrainManager读取）
+var swim_speed: float = 8.0           # 游泳速度
+var swim_buoyancy: float = 6.0        # 浮力强度
+
 # ==================== 玩家基础属性 ====================
 var current_hp: float = 100.0
 var max_hp: float = 100.0
@@ -89,6 +95,11 @@ func _process(delta: float) -> void:
 	if game_manager and game_manager.current_state == GameManager.GameState.PLAYING:
 		current_hp = min(current_hp + hp_regen * delta, max_hp)
 		current_mp = min(current_mp + mp_regen * delta, max_mp)
+	
+	# 🌊 水域检测（从 TerrainManager 读取海平面高度）
+	var terrain = get_node("/root/TerrainManager") if has_node("/root/TerrainManager") else null
+	ocean_level = terrain.ocean_level if terrain else ocean_level
+	is_in_water = global_position.y < ocean_level
 
 func _input(event: InputEvent) -> void:
 	# 🏗️ 建造模式拥有输入优先权
@@ -133,6 +144,12 @@ func _physics_process(delta: float) -> void:
 		handle_flying(delta)
 		return  # 飞行模式不执行地面操作
 	
+	# 🌊 水域判断
+	if is_in_water:
+		_sync_stats()
+		_handle_swimming(delta)
+		return
+	
 	# 从装备获取移动速度
 	_sync_stats()
 	
@@ -145,7 +162,12 @@ func _physics_process(delta: float) -> void:
 # ==================== 移动 ====================
 
 func _handle_movement(delta: float) -> void:
-	# 速度处理
+	# 水域浮力 & 游泳
+	if is_in_water:
+		velocity.y += swim_buoyancy * delta
+		if velocity.y > 2.0:
+			velocity.y = lerp(velocity.y, 2.0, delta * 3.0)
+		return  # 水域中不执行地面移动和重力
 	_is_sprinting = Input.is_action_pressed("sprint")
 	_current_speed = walk_speed * (sprint_mult if _is_sprinting else 1.0)
 	
@@ -180,6 +202,34 @@ func _handle_movement(delta: float) -> void:
 	else:
 		velocity.y = 0
 	
+	move_and_slide()
+
+# ==================== 游泳（水域状态） ====================
+
+func _handle_swimming(delta: float) -> void:
+	"""水中移动：水平方向 + 浮力"""
+	var input_dir: Vector2 = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	
+	_current_speed = swim_speed
+	_is_sprinting = Input.is_action_pressed("sprint")
+	if _is_sprinting:
+		_current_speed *= 1.5
+	
+	if direction:
+		velocity.x = direction.x * _current_speed
+		velocity.z = direction.z * _current_speed
+	else:
+		velocity.x = move_toward(velocity.x, 0, _current_speed)
+		velocity.z = move_toward(velocity.z, 0, _current_speed)
+	
+	# 上浮 / 下潜
+	if Input.is_action_pressed("jump"):
+		velocity.y += swim_buoyancy * delta * 2.0
+	if Input.is_key_pressed(KEY_CTRL):
+		velocity.y -= swim_buoyancy * delta * 2.0
+	
+	velocity.y = clamp(velocity.y, -5.0, 5.0)
 	move_and_slide()
 
 func _sync_stats() -> void:
@@ -217,12 +267,11 @@ func _sync_stats() -> void:
 
 func toggle_flying() -> void:
 	is_flying = not is_flying
-	if is_flying:
-		# 开启飞行
-		pass
-	else:
-		# 关闭飞行
-		pass
+
+## 外部设置飞行状态（由 HandHoldManager 同步领队状态时调用）
+func set_flying_state(flying: bool) -> void:
+	if flying != is_flying:
+		is_flying = flying
 
 func handle_flying(delta: float) -> void:
 	var input_dir: Vector2 = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
@@ -428,6 +477,7 @@ func get_current_state() -> Dictionary:
 	return {
 		"position": [global_position.x, global_position.y, global_position.z],
 		"is_flying": is_flying,
+		"is_in_water": is_in_water,
 		"hp": current_hp,
 		"mp": current_mp,
 		"max_hp": max_hp,
@@ -446,6 +496,8 @@ func set_state(data: Dictionary) -> void:
 		current_mp = float(data["mp"])
 	if data.has("is_flying"):
 		is_flying = data["is_flying"]
+	if data.has("is_in_water"):
+		is_in_water = data["is_in_water"]
 
 # ==================== 设置同步 ====================
 

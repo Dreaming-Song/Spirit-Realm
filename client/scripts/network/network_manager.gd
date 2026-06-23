@@ -162,12 +162,13 @@ func receive_chat(sender_id: int, message: String) -> void:
 
 ## 发送本地玩家状态（由 PlayerSpawner 调用）
 func send_player_state(x: float, y: float, z: float, rot_x: float, rot_y: float, 
-					   hp: float, mp: float, is_flying: bool) -> void:
+					   hp: float, mp: float, is_flying: bool, is_in_water: bool = false) -> void:
 	var state = {
 		"x": x, "y": y, "z": z,
 		"rot_x": rot_x, "rot_y": rot_y,
 		"hp": hp, "mp": mp,
-		"is_flying": is_flying
+		"is_flying": is_flying,
+		"is_in_water": is_in_water
 	}
 	sync_player_state(state)
 
